@@ -1,0 +1,85 @@
+data;
+
+/* Topology: Nodes and Links */
+set NODES := 0 1 2 3 4;
+
+/*param M_big := 10000*/
+
+/* Define LINKS as unordered pairs (assumed undirected) */
+
+
+set LINKS :=
+     (0,1) (0,3) (1,2) (1,4) (3,4) (2,3);
+
+/* Link distances */
+param D :=
+   [0,1] 200,
+   [0,3] 500,
+   [1,2] 300,
+   [1,4] 400,
+   [3,4] 250,
+   [2,3] 350;
+
+/* Traffic requests.
+   For example, we define one traffic request from node 0 to node 2.
+   (You can add more tuples as needed.)
+*/
+set TRAFFIC := (0,2);
+
+/* Traffic demand for each request */
+param T_sd :=
+   (0,2) 1;
+
+/* Capacity of one frequency slot (e.g., 1 unit) */
+param C := 1;
+
+/* Guard band in slots */
+param G := 1;
+
+/* Number of candidate paths considered */
+param K := 2;
+
+/* Modulation formats and their maximum reach */
+set MODULATIONS := m1 m2;
+param R :=
+   m1 400,
+   m2 600;
+
+/* Zones for spectrum allocation */
+set ZONES := 1 2 3 4;
+param C_z :=
+   1 50,
+   2 50,
+   3 50,
+   4 50;
+
+/* Global spectrum limit */
+param N_slots := 100;
+
+/* Candidate paths for each traffic request.
+   For request (0,2), we define two candidate paths.
+   p1: 0 -> 1 -> 2
+   p2: 0 -> 3 -> 2   (using link [2,3] as undirected)
+*/
+set PATHS[(0,2)] := p1 p2;
+
+/* Links used by each candidate path */
+set PATH_LINKS[(0,2), p1] := [0,1] [1,2];
+set PATH_LINKS[(0,2), p2] := [0,3] [2,3];
+
+/* Feasible modulation formats for each candidate path.
+   For simplicity, assume both modulations are allowed on p1 and only m2 on p2.
+*/
+set FEAS_MOD[(0,2), p1] := m1 m2;
+set FEAS_MOD[(0,2), p2] := m2;
+
+/* Number of frequency slots required for each (traffic, path, modulation).
+   These numbers come from the relation F_{msd} = (T_sd)/(C * m) in your formulation.
+   (Here we simply provide example slot numbers.)
+*/
+param N_req :=
+   (0,2), p1, m1 10,
+   (0,2), p1, m2 8,
+   (0,2), p2, m2 12;
+
+end;
